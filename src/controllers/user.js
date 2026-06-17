@@ -94,8 +94,21 @@ async function handleUserLogin(req, res){
      }
 }
 
+async function handleLogout(req, res){
+     try{
+          res.clearCookie("token");
+          return res.status(200).json({
+               message: "Logout Successful",
+          })
+     } catch(err){
+          return res.status(500).json({
+               message: "Error while logging out",
+          })
+     }
+}
 
 module.exports = {
      handleUserSignup,
-     handleUserLogin
+     handleUserLogin,
+     handleLogout
 }

@@ -19,6 +19,10 @@ const blogSchema = new Schema({
           ref: "User",
           required: true,
      },
+     isDeleted: {
+          type: Boolean,
+          default: false
+     }
 }, {timestamps: true});
 
 const Blog = model("Blog", blogSchema);
