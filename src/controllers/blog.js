@@ -34,7 +34,30 @@ async function handleGetAllBlogs(req, res){
      try{
           const userId = req.user.id;
           const blogs = await Blog.find({
-               createdBy: userId,
+               isDeleted: false
+          }).populate(
+               "createdBy",
+               "fullName"
+          );
+
+          return res.status(200).json({
+               message: "Fetched all blogs",
+               blogs
+          });
+     }
+     catch(err){
+          return res.status(500).json({
+               message: "Error while getting the blogs",
+               error: err.message
+          });
+     }
+}
+
+async function handleGetMyBlogs(req, res){
+     try{
+          const userId = req.user.id;
+          const blogs = await Blog.find({
+               userId,
                isDeleted: false
           });
 
@@ -246,6 +269,7 @@ async function handlePermanentDelete(req, res){
 module.exports = {
      handleCreateBlog,
      handleGetAllBlogs,
+     handleGetMyBlogs,
      handleGetSingleBlogs,
      handleUpdateBlog,
      handleDeleteBlog,

@@ -2,6 +2,7 @@ const express = require("express");
 const { authenticateUser } = require("../middlewares/auth");
 const {handleCreateBlog,
      handleGetAllBlogs,
+     handleGetMyBlogs,
      handleGetSingleBlogs,
      handleUpdateBlog,
      handleDeleteBlog,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.post("/create", authenticateUser, handleCreateBlog);
 router.get("/", authenticateUser, handleGetAllBlogs);
+router.get("/my-blogs", authenticateUser, handleGetMyBlogs);
 router.get("/deleted", authenticateUser, handleGetDeletedBlogs);
 router.patch("/restore/:id", authenticateUser, handleRestoreBlogs);
 router.get("/:id", authenticateUser, handleGetSingleBlogs);
