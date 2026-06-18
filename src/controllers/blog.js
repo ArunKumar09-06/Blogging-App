@@ -57,7 +57,7 @@ async function handleGetMyBlogs(req, res){
      try{
           const userId = req.user.id;
           const blogs = await Blog.find({
-               userId,
+               createdBy: userId,
                isDeleted: false
           });
 
