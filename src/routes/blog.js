@@ -12,7 +12,9 @@ const {handleCreateBlog,
 } = require("../controllers/blog.js");
 const router = express.Router();
 
-router.post("/create", authenticateUser, handleCreateBlog);
+const upload = require("../middlewares/multer.js");
+
+router.post("/create", authenticateUser, upload.single("coverImage"),handleCreateBlog);
 router.get("/", authenticateUser, handleGetAllBlogs);
 router.get("/my-blogs", authenticateUser, handleGetMyBlogs);
 router.get("/deleted", authenticateUser, handleGetDeletedBlogs);

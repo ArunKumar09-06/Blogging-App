@@ -2,6 +2,10 @@ const Blog = require("../models/blog");
 
 async function handleCreateBlog(req, res) {
      try {
+          console.log(req.body);
+          console.log(req.files);
+          console.log(req.file);
+
           const { title, body } = req.body;
           if (!title || !body) {
                return res.status(400).json({
@@ -11,9 +15,11 @@ async function handleCreateBlog(req, res) {
 
           const userId = req.user.id;
 
+          const coverImageUrl = req.file ? "/uploads/" + req.file.filename : "/images/defaultCover.png"
           const blog = await Blog.create({
                title,
                body,
+               coverImageUrl,
                createdBy: userId
           })
 

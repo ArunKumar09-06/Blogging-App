@@ -15,6 +15,7 @@ app.use(express.static("public"));
 app.use("/user", userRouter);
 app.use("/blog", blogRouter);
 app.use("/comment", commentRouter);
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
      res.json({
