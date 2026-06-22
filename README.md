@@ -1,366 +1,385 @@
-# Blogify Backend
+# 📝 Blogify Backend
 
-A RESTful Blog Application built with Node.js, Express.js, MongoDB, Mongoose, JWT Authentication, and Cookie-Based Authorization.
-
----
-
-## Features Implemented
-
-### Authentication
-
-* User Signup
-* User Login
-* Password Hashing using bcrypt
-* JWT Token Generation
-* Cookie-Based Authentication
-* Protected Routes using Authentication Middleware
-
-### Blog Management
-
-* Create Blog
-* Get All Blogs
-* Get Single Blog by ID
-
-### Database Relationships
-
-* User ↔ Blog Relationship using MongoDB ObjectId References
-* Mongoose Population Support (Schema Ready)
+A production-ready RESTful backend for a blogging platform built using **Node.js**, **Express.js**, and **MongoDB**. It provides secure authentication, blog management, image uploads, comments, and soft delete functionality following the **MVC Architecture**.
 
 ---
 
-## Tech Stack
+## 🚀 Features
 
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JWT (jsonwebtoken)
-* bcrypt
-* cookie-parser
-* dotenv
-* nodemon
+### 🔐 Authentication
+- User Registration
+- User Login
+- JWT Authentication
+- Cookie-Based Authentication
+- Protected Routes
+- User Logout
+- Password Hashing using bcrypt
 
 ---
 
-## Project Structure
+### 📝 Blog Management
+- Create Blog
+- Get All Blogs
+- Get My Blogs
+- Get Single Blog
+- Update Blog
+- Soft Delete (Move to Trash)
+- Restore Deleted Blog
+- Permanent Delete
+- Ownership Authorization
+
+---
+
+### 💬 Comment Management
+- Add Comments
+- Get Comments for a Blog
+- Protected Comment Routes
+
+---
+
+### 🖼️ Image Upload
+- Upload Cover Images
+- Multer Disk Storage
+- Custom File Names using NanoID
+- Maximum File Size: **5 MB**
+- Supports:
+  - JPG
+  - JPEG
+  - PNG
+  - WEBP
+- Automatic Old Image Deletion
+- Delete Image on Permanent Blog Deletion
+- Default Cover Image Support
+
+---
+
+### 🛡️ Security
+- JWT Authentication
+- HTTP Only Cookies
+- Password Hashing
+- Protected Routes
+- Ownership Validation
+- File Type Validation
+- File Size Validation
+
+---
+
+### ⚙️ Error Handling
+- Global Multer Error Handling
+- JSON Error Responses
+- Proper HTTP Status Codes
+- Graceful Error Handling
+
+---
+
+## 🏗️ Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcrypt
+- Multer
+- NanoID
+- Cookie Parser
+- dotenv
+
+---
+
+## 📂 Project Structure
 
 ```text
-src/
+Blogify
 │
-├── config/
-│   └── db.js
+├── public/
+│   └── images/
+│       └── defaultCover.png
 │
-├── controllers/
-│   ├── user.js
-│   └── blog.js
+├── uploads/
 │
-├── middlewares/
-│   └── auth.js
+├── src/
+│   ├── config/
+│   │   └── db.js
+│   │
+│   ├── controllers/
+│   │   ├── user.js
+│   │   ├── blog.js
+│   │   └── comment.js
+│   │
+│   ├── middlewares/
+│   │   ├── auth.js
+│   │   ├── multer.js
+│   │   └── errorHandler.js
+│   │
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Blog.js
+│   │   └── Comment.js
+│   │
+│   ├── routes/
+│   │   ├── user.js
+│   │   ├── blog.js
+│   │   └── comment.js
+│   │
+│   ├── utils/
+│   │   └── file.js
+│   │
+│   └── services/
 │
-├── models/
-│   ├── user.js
-│   └── blog.js
-│
-├── routes/
-│   ├── user.js
-│   └── blog.js
-│
-└── utils/
-
-public/
-
-index.js
-.env
+├── .env
+├── index.js
+├── package.json
+└── README.md
 ```
 
 ---
 
-## Environment Variables
+## ⚙️ Installation
 
-Create a `.env` file in the root directory.
-
-```env
-PORT=8000
-
-MONGO_URL=your_mongodb_connection_string
-
-JWT_SECRET=your_secret_key
-```
-
----
-
-## Installation
-
-Clone the repository:
+### Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/your-username/Blogify.git
 ```
 
-Move into the project:
+### Navigate to the Project
 
 ```bash
 cd Blogify
 ```
 
-Install dependencies:
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-Run the server:
+### Create a `.env` File
+
+```env
+PORT=8000
+MONGO_URL=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+```
+
+### Start the Server
 
 ```bash
 npm run dev
 ```
 
----
+or
 
-## User Model
-
-```js
-{
-  fullName,
-  email,
-  password,
-  profileImage,
-  role
-}
+```bash
+node index.js
 ```
 
-### Constraints
+The server will run at:
 
-* Email must be unique
-* Password is stored in hashed form
-* Role can be:
-
-  * USER
-  * ADMIN
-
----
-
-## Blog Model
-
-```js
-{
-  title,
-  body,
-  coverImageUrl,
-  createdBy
-}
 ```
-
-### Relationship
-
-```text
-User
- ↓
-Many Blogs
-```
-
-`createdBy` stores the User's ObjectId.
-
----
-
-## Authentication Flow
-
-### Signup
-
-```text
-User Registers
-↓
-Password Hashed using bcrypt
-↓
-User Saved in MongoDB
-```
-
-### Login
-
-```text
-User Login
-↓
-Credentials Verified
-↓
-JWT Generated
-↓
-Token Stored in HTTP Cookie
-```
-
-### Protected Routes
-
-```text
-Request
-↓
-Cookie Sent
-↓
-JWT Verified
-↓
-User Attached to req.user
-↓
-Controller Access Granted
+http://localhost:8000
 ```
 
 ---
 
-## API Endpoints
+# 📖 API Endpoints
 
-### User Routes
+## Authentication
 
-#### Signup
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/user/register` | Register a new user |
+| POST | `/user/login` | Login user |
+| POST | `/user/logout` | Logout user |
 
-```http
-POST /user/signup
+---
+
+## Blog
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/blog/create` | Create Blog |
+| GET | `/blog` | Get All Blogs |
+| GET | `/blog/my-blogs` | Get Logged-in User Blogs |
+| GET | `/blog/:id` | Get Single Blog |
+| PATCH | `/blog/:id` | Update Blog |
+| DELETE | `/blog/delete/:id` | Move Blog to Trash |
+| PATCH | `/blog/restore/:id` | Restore Blog |
+| DELETE | `/blog/permanentDelete/:id` | Permanently Delete Blog |
+| GET | `/blog/deleted` | Get Deleted Blogs |
+
+---
+
+## Comments
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/comment/:blogId` | Add Comment |
+| GET | `/comment/:blogId` | Get Comments |
+
+---
+
+# 🖼️ Image Upload
+
+### Storage
+
+Images are stored inside
+
+```
+uploads/
 ```
 
-Request:
+Example
+
+```
+/uploads/Hg82KdLpQw.jpg
+```
+
+### Supported Formats
+
+- JPG
+- JPEG
+- PNG
+- WEBP
+
+### Maximum Size
+
+```
+5 MB
+```
+
+---
+
+# 🔄 Image Lifecycle
+
+### Creating a Blog
+
+```
+Upload Image
+      │
+      ▼
+Store in uploads/
+      │
+      ▼
+Save Image Path in MongoDB
+```
+
+---
+
+### Updating a Blog
+
+```
+Upload New Image
+      │
+      ▼
+Update Database
+      │
+      ▼
+Delete Old Image
+```
+
+---
+
+### Permanently Deleting a Blog
+
+```
+Delete Uploaded Image
+      │
+      ▼
+Delete Blog from Database
+```
+
+---
+
+# 🛡️ Security Features
+
+- JWT Authentication
+- Cookie-Based Authentication
+- Password Hashing using bcrypt
+- Protected Routes
+- Ownership Authorization
+- File Validation
+- Global Error Handling
+
+---
+
+# ⚠️ Error Responses
+
+### Invalid File Type
 
 ```json
 {
-  "fullName": "Arun Kumar",
-  "email": "arun@gmail.com",
-  "password": "123456"
+    "success": false,
+    "message": "Only JPG, JPEG, PNG and WEBP image files are allowed."
 }
 ```
 
 ---
 
-#### Login
-
-```http
-POST /user/login
-```
-
-Request:
+### File Size Exceeded
 
 ```json
 {
-  "email": "arun@gmail.com",
-  "password": "123456"
+    "success": false,
+    "message": "Image size should not exceed 5 MB."
 }
 ```
 
-Response:
+---
+
+### Unauthorized Access
 
 ```json
 {
-  "message": "User logged in"
+    "message": "Unauthorized"
 }
 ```
 
-JWT Token is stored in Cookie.
-
 ---
 
-### Blog Routes
-
-#### Create Blog
-
-```http
-POST /blog/create
-```
-
-Protected Route
-
-Request:
+### Blog Not Found
 
 ```json
 {
-  "title": "Understanding JWT",
-  "body": "JWT stands for JSON Web Token..."
+    "message": "Blog not found"
 }
 ```
 
 ---
 
-#### Get All Blogs
+# 📌 Upcoming Features
 
-```http
-GET /blog
-```
-
-Protected Route
-
-Returns all blogs created by the authenticated user.
-
----
-
-#### Get Single Blog
-
-```http
-GET /blog/:id
-```
-
-Protected Route
-
-Returns a specific blog by ID.
+- Pagination
+- Search
+- Sorting
+- Filtering
+- Like / Unlike Blogs
+- Bookmark Blogs
+- User Profile
+- Profile Picture Upload
+- Change Password
+- Forgot Password
+- Email Verification
+- Notifications
+- Swagger Documentation
+- Rate Limiting
+- Redis Caching
+- Docker Support
+- Cloudinary Integration
 
 ---
 
-## Middleware
+# 👨‍💻 Author
 
-### Authentication Middleware
+**Arun Kumar**
 
-Responsibilities:
+B.Tech – Computer Science & Engineering (AI & ML)
 
-* Read JWT from Cookie
-* Verify Token
-* Check Expiration
-* Attach User Data to `req.user`
-
-Example:
-
-```js
-req.user = {
-  id,
-  email,
-  role
-}
-```
+Aspiring MERN Stack Developer
 
 ---
 
-## Password Security
+# 📄 License
 
-Passwords are hashed using bcrypt.
-
-Example:
-
-```js
-const hashedPassword = await bcrypt.hash(password, 10);
-```
-
-Passwords are never stored in plain text.
-
----
-
-## Current Progress
-
-### Completed
-
-* [x] Project Setup
-* [x] MongoDB Connection
-* [x] User Model
-* [x] Blog Model
-* [x] Signup API
-* [x] Login API
-* [x] bcrypt Password Hashing
-* [x] JWT Authentication
-* [x] Cookie-Based Authentication
-* [x] Authentication Middleware
-* [x] Create Blog API
-* [x] Get All Blogs API
-* [x] Get Single Blog API
-
-### Upcoming
-
-* [ ] Update Blog API
-* [ ] Delete Blog API
-* [ ] Authorization Checks (Owner Only)
-* [ ] Comments Feature
-* [ ] Image Upload using Multer
-* [ ] EJS Frontend
-* [ ] Admin Features
-
-```
-```
+This project is licensed under the MIT License.

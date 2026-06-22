@@ -6,6 +6,7 @@ dotenv.config();
 const userRouter = require("./src/routes/user.js");
 const blogRouter = require("./src/routes/blog.js");
 const commentRouter = require("./src/routes/comment.js");
+const errorHandler = require("./src/middlewares/erroHandler.js");
 
 const app = express();
 app.use(express.json());
@@ -16,7 +17,7 @@ app.use("/user", userRouter);
 app.use("/blog", blogRouter);
 app.use("/comment", commentRouter);
 app.use("/uploads", express.static("uploads"));
-
+app.use(errorHandler);
 app.get("/", (req, res) => {
      res.json({
           message: "Blog app running"
