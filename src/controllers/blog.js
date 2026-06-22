@@ -1,4 +1,5 @@
 const Blog = require("../models/blog");
+const {deleteImage} = require("../utlis/file");
 
 async function handleCreateBlog(req, res) {
      try {
@@ -36,8 +37,8 @@ async function handleCreateBlog(req, res) {
      }
 }
 
-async function handleGetAllBlogs(req, res){
-     try{
+async function handleGetAllBlogs(req, res) {
+     try {
           const userId = req.user.id;
           const blogs = await Blog.find({
                isDeleted: false
@@ -51,7 +52,7 @@ async function handleGetAllBlogs(req, res){
                blogs
           });
      }
-     catch(err){
+     catch (err) {
           return res.status(500).json({
                message: "Error while getting the blogs",
                error: err.message
@@ -59,8 +60,8 @@ async function handleGetAllBlogs(req, res){
      }
 }
 
-async function handleGetMyBlogs(req, res){
-     try{
+async function handleGetMyBlogs(req, res) {
+     try {
           const userId = req.user.id;
           const blogs = await Blog.find({
                createdBy: userId,
@@ -72,7 +73,7 @@ async function handleGetMyBlogs(req, res){
                blogs
           });
      }
-     catch(err){
+     catch (err) {
           return res.status(500).json({
                message: "Error while getting the blogs",
                error: err.message
@@ -80,25 +81,25 @@ async function handleGetMyBlogs(req, res){
      }
 }
 
-async function handleGetSingleBlogs(req, res){
-     try{
+async function handleGetSingleBlogs(req, res) {
+     try {
           const blogId = req.params.id;
           const userId = req.user.id;
 
           const blog = await Blog.findById(blogId);
 
-          if(!blog){
+          if (!blog) {
                return res.status(404).json({
                     message: "Blog not found",
                })
           }
-          
+
           return res.status(200).json({
                message: "Fetched the blog with the given id",
                blog
           });
      }
-     catch(err){
+     catch (err) {
           return res.status(500).json({
                message: "Error while Getting the blog",
                error: err.message
@@ -106,32 +107,41 @@ async function handleGetSingleBlogs(req, res){
      }
 }
 
-async function handleUpdateBlog(req, res){
-     try{
+async function handleUpdateBlog(req, res) {
+     try {
           const blogId = req.params.id;
           const { title, body } = req.body;
           const blog = await Blog.findById(blogId);
 
-          if(!blog){
+          if (!blog) {
                return res.status(404).json({
                     message: "Blog not found"
                });
           }
 
           // ownership check 
-          if(blog.createdBy.toString() !== req.user.id){
+          if (blog.createdBy.toString() !== req.user.id) {
                return res.status(403).json({
                     message: "You are not allowed to update this blog"
                });
           }
 
-          if(title){
+          if (title) {
                blog.title = title;
           }
-          if(body){
+          if (body) {
                blog.body = body;
           }
+          let oldImage = null;
+          if (req.file) {
+               oldImage = blog.coverImageUrl;
+               blog.coverImageUrl = "/uploads/" + req.file.filename;
+          }
           await blog.save();
+
+          if (oldImage) {
+               await deleteImage(oldImage);
+          }
 
           return res.status(200).json({
                message: "Blog Updated Successfully",
@@ -139,7 +149,7 @@ async function handleUpdateBlog(req, res){
           });
 
      }
-     catch(err){
+     catch (err) {
           return res.status(500).json({
                message: "Error while updating the blog",
                error: err.message,
@@ -147,20 +157,20 @@ async function handleUpdateBlog(req, res){
      }
 }
 
-async function handleDeleteBlog(req, res){
-     try{
+async function handleDeleteBlog(req, res) {
+     try {
           const blogId = req.params.id;
           const createdById = req.user.id;
 
           const blog = await Blog.findById(blogId);
-          if(!blog){
+          if (!blog) {
                return res.status(400).json({
                     message: "Blog not found"
                });
           }
 
-          if(blog.createdBy.toString() !== createdById){
-               return res.status(403),json({
+          if (blog.createdBy.toString() !== createdById) {
+               return res.status(403), json({
                     message: "You are not allowed to delete this blog",
                });
           }
@@ -170,7 +180,7 @@ async function handleDeleteBlog(req, res){
           return res.status(200).json({
                message: "Blog Deletion successful",
           })
-     } catch(err){
+     } catch (err) {
           return res.status(500).json({
                message: "Error while deleting the Blog",
                error: err.message
@@ -178,15 +188,15 @@ async function handleDeleteBlog(req, res){
      }
 }
 
-async function handleGetDeletedBlogs(req, res){
-     try{
+async function handleGetDeletedBlogs(req, res) {
+     try {
           const createdById = req.user.id;
           const blogs = await Blog.find({
                createdBy: createdById,
                isDeleted: true
           });
 
-          if(blogs.length == 0){
+          if (blogs.length == 0) {
                return res.status(200).json({
                     message: "There are no blogs which are deleted",
                })
@@ -196,7 +206,7 @@ async function handleGetDeletedBlogs(req, res){
                message: "Deleted blogs are: ",
                blogs
           })
-     } catch(err){
+     } catch (err) {
           return res.status(500).json({
                message: "Error while reteriving deleted blogs",
                error: err.message
@@ -204,19 +214,19 @@ async function handleGetDeletedBlogs(req, res){
      }
 }
 
-async function handleRestoreBlogs(req, res){
-     try{
+async function handleRestoreBlogs(req, res) {
+     try {
           const blogId = req.params.id;
           const createdById = req.user.id;
 
           const blog = await Blog.findById(blogId);
-          if(!blog){
+          if (!blog) {
                return res.status(404).json({
                     message: "Blog doesn't exists",
                });
           }
 
-          if(blog.createdBy.toString() !== createdById){
+          if (blog.createdBy.toString() !== createdById) {
                return res.status(403).json({
                     message: "You are not allowed to delete this blog",
                });
@@ -228,7 +238,7 @@ async function handleRestoreBlogs(req, res){
                message: "Blog Restored Successfully",
                blog
           })
-     } catch(err){
+     } catch (err) {
           return res.status(500).json({
                message: "Error while restoring the deleteb blogs",
                error: err.message
@@ -236,36 +246,38 @@ async function handleRestoreBlogs(req, res){
      }
 }
 
-async function handlePermanentDelete(req, res){
-     try{
+async function handlePermanentDelete(req, res) {
+     try {
           const blogId = req.params.id;
           const createdById = req.user.id;
 
           const blog = await Blog.findById(blogId);
-          if(!blog){
+          if (!blog) {
                return res.status(404).json({
                     message: "Blog doesn't exists",
                });
           }
 
-          if(blog.createdBy.toString() !== createdById){
+          if (blog.createdBy.toString() !== createdById) {
                return res.status(403).json({
                     message: "You are not allowed to delete this blog",
                });
           }
 
-          if(!blog.isDeleted){
+          if (!blog.isDeleted) {
                return res.status(400).json({
                     message: "Move blog to trash before permanently deleting",
                });
           }
+
+          await deleteImage(blog.coverImageUrl);
 
           await blog.deleteOne();
 
           return res.status(200).json({
                message: "Blog permanently deleted"
           });
-     } catch(err){
+     } catch (err) {
           return res.status(500).json({
                message: "Error while deleting",
           })

@@ -20,7 +20,7 @@ router.get("/my-blogs", authenticateUser, handleGetMyBlogs);
 router.get("/deleted", authenticateUser, handleGetDeletedBlogs);
 router.patch("/restore/:id", authenticateUser, handleRestoreBlogs);
 router.get("/:id", authenticateUser, handleGetSingleBlogs);
-router.patch("/:id", authenticateUser, handleUpdateBlog);
+router.patch("/:id", authenticateUser, upload.single("coverImage"), handleUpdateBlog);
 router.delete("/delete/:id", authenticateUser, handleDeleteBlog);
 router.delete("/permanentDelete/:id", authenticateUser, handlePermanentDelete);
 
